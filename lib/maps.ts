@@ -1,9 +1,9 @@
-/*jslint node: true */
-var config = require('map-tools/config');
-var utils = require('map-tools/utils');
+/// <reference path="typings/tsd.d.ts"/>
 
-module.exports = function (global) {
-  'use strict';
+import utils = require('./utils');
+import config = require('./config');
+
+class Maps {
 
   /**
    * Injects Google API Javascript File and adds a callback to load the Google Maps Async.
@@ -12,30 +12,31 @@ module.exports = function (global) {
    *
    * @returns the element appended
    */
-  function load(id, args) {
+  public static load(id, args): {} {
     var version = args.version || config.version;
-    var script = global.document.createElement('script');
+    var script = window.document.createElement('script');
     script.type = 'text/javascript';
     script.src = config.url + '?v=' + version + '&callback=mapTools.maps.' + id + '.create';
-    return global.document.body.appendChild(script);
+    return window.document.body.appendChild(script);
   }
 
-  function mapOptions(args) {
+  public static mapOptions(args): {} {
     // To clone Arguments excluding customMapOptions
     var result = utils.clone(args, config.customMapOptions);
+
     result.zoom = args.zoom || config.zoom;
+
     if (args.lat && args.lng) {
-      result.center = new global.google.maps.LatLng(args.lat, args.lng);
+      result.center = new google.maps.LatLng(args.lat, args.lng);
     }
+
     if (args.type) {
-      result.mapTypeId = global.google.maps.MapTypeId[args.type] || false;
+      result.mapTypeId = google.maps.MapTypeId[args.type] || false;
     }
 
     return result;
   }
 
-  return {
-    load: load,
-    mapOptions: mapOptions
-  };
-};
+}
+
+export = Maps;
